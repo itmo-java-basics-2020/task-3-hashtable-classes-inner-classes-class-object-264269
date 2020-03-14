@@ -70,7 +70,7 @@ public class HashTableTest {
         int numberOfKeys = 100_000;
 
         invoke(
-                new HashTable(10000), // initialCapacity
+                new HashTable(1000), // initialCapacity
                 new OperationPercentageProfile(55),
                 new KeysProvider(numberOfKeys, this::generateRandomString),
                 defaultIntValuesSupplier,
