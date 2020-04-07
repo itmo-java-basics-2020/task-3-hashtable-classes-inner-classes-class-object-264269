@@ -1,19 +1,14 @@
 package ru.itmo.java;
 
-import java.util.Map;
-
 public class HashTable {
-
-    //внутренние классы
+    private Entry[] entriesArray;
+    private int entriesQuantity;
+    private final float loadFactor;
 
     private class Entry {
-        //поля
-
-        Object entryKey;
-        Object entryValue;
-        boolean deletedStatus;
-
-        //конструкторы
+        private Object entryKey;
+        private Object entryValue;
+        private boolean deletedStatus;
 
         Entry(Object key_, Object value_) {
             entryKey = key_;
@@ -21,9 +16,7 @@ public class HashTable {
             deletedStatus = false;
         }
 
-        //методы
-
-        void Delete() {
+        void delete() {
             deletedStatus = true;
         }
         Object getKey() {
@@ -33,52 +26,40 @@ public class HashTable {
             return  entryValue;
         }
 
-        //проверки
-
         boolean isDeleted() {
             return deletedStatus;
         }
     }
 
-    //поля
-
-    private Entry[] entriesArray;
-    private int entriesQuantity;
-    private final float loadFactor;
-
-    //конструкторы
-
-    public HashTable(int size_) {
-        if (size_ <= 0) {
+    public HashTable(int size) {
+        if (size <= 0) {
             entriesArray = new Entry[1];
         } else {
-            entriesArray = new Entry[size_];
+            entriesArray = new Entry[size];
         }
         loadFactor = 0.2F;
     }
-    public HashTable(int size_, float loadFactor_) {
-        if (size_ <= 0) {
+    public HashTable(int size, float loadFactor) {
+        if (size <= 0) {
             entriesArray = new Entry[1];
         } else {
-            entriesArray = new Entry[size_];
+            entriesArray = new Entry[size];
         }
-        if (loadFactor_ >= 1.0F) {
-            loadFactor = 0.2F;
+        if (loadFactor >= 1.0F) {
+            this.loadFactor = 0.2F;
         } else {
-            loadFactor = loadFactor_;
+            this.loadFactor = loadFactor;
         }
     }
 
-    //методы
-
-    private int hashFunction(int hash_, int addition_) {
-        int result = ((hash_ + addition_) % entriesArray.length);
+    private int hashFunction(int hash, int addition) {
+        int result = ((hash + addition) % entriesArray.length);
         if (result < 0) {
             return (-result);
         }
         return result;
     }
-    private int threshold () {
+    private int threshold() {
         return (int)(entriesArray.length * loadFactor);
     }
     private void arrayExtension() {
@@ -147,8 +128,7 @@ public class HashTable {
                 } else {
                     addition++;
                 }
-            }
-            if (!entriesArray[predictedIndex].isDeleted()) {
+            } else {
                 if (entriesArray[predictedIndex].getKey().equals(key)) {
                     Entry result = new Entry(entriesArray[predictedIndex].getKey(),
                             entriesArray[predictedIndex].getValue());
@@ -188,8 +168,7 @@ public class HashTable {
                 } else {
                     addition++;
                 }
-            }
-            if (!entriesArray[predictedIndex].isDeleted()) {
+            } else {
                 if (entriesArray[predictedIndex].getKey().equals(key)){
                     return entriesArray[predictedIndex].getValue();
                 } else {
@@ -225,10 +204,9 @@ public class HashTable {
                 } else {
                     addition++;
                 }
-            }
-            if (!entriesArray[predictedIndex].isDeleted()) {
+            } else {
                 if (entriesArray[predictedIndex].getKey().equals(key)) {
-                    entriesArray[predictedIndex].Delete();
+                    entriesArray[predictedIndex].delete();
                     entriesQuantity -= 1;
                     return entriesArray[predictedIndex].getValue();
                 } else {
@@ -242,7 +220,7 @@ public class HashTable {
     }
 
     int size() {
-        return  entriesQuantity;
+        return entriesQuantity;
     }
 
 }
